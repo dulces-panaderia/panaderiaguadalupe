@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Panadería Guadalupe</title><link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css"></head><body>
+<div id="mensaje"></div>
+<div id="login"><div class="login-tarjeta">
+<img class="logo-login" src="img/logo.png" alt="Logo de Panadería Guadalupe">
+<h1>Bienvenido</h1><p class="subtitulo">Ingresá con tu usuario o tu correo</p>
+<label for="usuario">Usuario o correo</label><input id="usuario" autocomplete="username" autocapitalize="none">
+<label for="clave">Contraseña</label><input id="clave" type="password" autocomplete="current-password">
+<button id="btnIngresar">Ingresar</button><p id="loginErr"></p>
+<p class="nota">¿No tenés usuario? Pedíselo al administrador.</p></div></div>
+<div id="app">
+<header><div class="marca"><img class="logo" src="img/logo.png" alt="Logo de Panadería Guadalupe"><span class="nombre-marca">Panadería Guadalupe</span></div>
+<div class="sesion"><span id="quien"></span><button id="btnSalir" class="chico secundario">Salir</button></div></header>
+<nav><button data-t="vender">Vender</button><button data-t="caja">Caja</button><button data-t="prod">Productos</button><button data-t="cat">Categorías</button><button data-t="cli">Clientes</button><button data-t="ventas">Ventas</button><button data-t="comp">Compras</button><button data-t="prov">Proveedores</button><button data-t="mov">Historial</button><button data-t="entregas">Entregas</button><button data-t="dash">Panel</button><button data-t="emp">Empleados</button></nav>
+<main>
+<section id="s_vender"><h2>Nueva venta</h2>
+<p id="aviso_caja" class="aviso alerta" style="display:none">La caja está cerrada. Abrila en la pestaña Caja para poder vender.</p>
+<div id="venta_ok" class="aviso exito" style="display:none"></div>
+<div class="buscador"><input id="buscar" type="search" placeholder="Buscar en todos los productos por nombre, código o categoría" autocomplete="off"></div>
+<div id="filtros" class="filtros"></div><div class="cuadricula" id="cuadricula"></div>
+<div class="caja"><h3>Carrito</h3><div id="carrito" class="zona-tabla"></div>
+<div class="fila" style="margin-top:16px"><select id="cliSel"></select><select id="tipo"><option value="mostrador">Mostrador</option><option value="delivery">Delivery</option></select>
+<input id="dir" placeholder="Dirección de entrega" style="display:none" autocomplete="off"><input id="envio" inputmode="decimal" placeholder="Costo de envío (opcional)" style="display:none" autocomplete="off"><select id="cobro_entrega" style="display:none" aria-label="Cuándo se cobra"><option value="ahora">Cobro: se paga ahora</option><option value="contra">Cobro: contra entrega (lo cobra el delivery en efectivo)</option></select></div>
+<div id="bloque_pagos"><h3>Cobro</h3><p class="pista">Se pueden combinar medios de pago. Lo que quede "a cuenta" suma a la deuda del cliente, y solo se permite con clientes registrados.</p>
+<div class="pagos"><div class="pago"><label for="pg_efectivo">Efectivo</label><input id="pg_efectivo" inputmode="decimal" autocomplete="off" placeholder="0,00"><button class="chico secundario" data-accion="resto" data-medio="efectivo">Resto</button></div><div class="pago"><label for="pg_transferencia">Transferencia</label><input id="pg_transferencia" inputmode="decimal" autocomplete="off" placeholder="0,00"><button class="chico secundario" data-accion="resto" data-medio="transferencia">Resto</button></div><div class="pago"><label for="pg_tarjeta">Tarjeta</label><input id="pg_tarjeta" inputmode="decimal" autocomplete="off" placeholder="0,00"><button class="chico secundario" data-accion="resto" data-medio="tarjeta">Resto</button></div><div class="pago"><label for="pg_deuda">A cuenta (deuda)</label><input id="pg_deuda" inputmode="decimal" autocomplete="off" placeholder="0,00"><button class="chico secundario" data-accion="resto" data-medio="deuda">Resto</button></div><small id="pg_deuda_nota" class="pista">Para dejar saldo a cuenta, elegí un cliente registrado.</small></div>
+<p id="pg_resumen" class="resumen-pagos"></p></div><p id="aviso_contra" class="aviso alerta" style="display:none"></p>
+<button id="btnConfirmar" data-accion="confirmar">Confirmar venta</button></div></section>
+<section id="s_prod"><h2>Productos</h2><div class="caja"><div class="fila"><input id="pn" autocomplete="off" placeholder="Nombre"><select id="pc"><option value="">Sin categoría</option></select>
+<select id="pu"><option value="unidad">Por unidad</option><option value="kg">Por kilo</option></select>
+<input id="pp" autocomplete="off" type="number" step="0.01" placeholder="Precio (por unidad o kg)"><input id="pm" autocomplete="off" type="number" step="0.001" placeholder="Stock mínimo"></div>
+<p class="pista">El stock y el costo no se cargan acá: entran con una compra (pestaña Compras). El costo se calcula solo, como promedio de las compras.</p>
+<button data-accion="guardar">Guardar producto</button></div><div class="barra"><div id="sel_prod" class="selector"></div><input id="bus_prod" type="search" placeholder="Buscar por nombre, código o categoría" autocomplete="off"></div><p id="pista_prod" class="pista"></p>
+<div id="tprod" class="zona-tabla"></div></section>
+<section id="s_cat"><h2>Categorías</h2><div class="caja"><div class="fila"><input id="kn" autocomplete="off" placeholder="Nombre de la categoría (ej: Panes, Facturas, Tortas)"></div>
+<button data-accion="guardar">Guardar categoría</button></div><div class="barra"><div id="sel_cat" class="selector"></div><input id="bus_cat" type="search" placeholder="Buscar por nombre o código" autocomplete="off"></div>
+<div id="tcat" class="zona-tabla"></div></section>
+<section id="s_cli"><h2>Clientes</h2><div class="caja"><div class="fila"><input id="cn" autocomplete="off" placeholder="Nombre"><input id="ct" autocomplete="off" placeholder="Teléfono"><input id="cd" autocomplete="off" placeholder="Dirección"></div>
+<button data-accion="guardar">Guardar cliente</button></div><div id="detalle_cli" class="caja" style="display:none"></div>
+<div class="barra"><div id="sel_cli" class="selector"></div><input id="bus_cli" type="search" placeholder="Buscar por nombre, código, teléfono o dirección" autocomplete="off"></div>
+<div id="tcli" class="zona-tabla"></div></section>
+<section id="s_ventas"><h2>Últimas ventas</h2><div class="barra"><div id="sel_ventas" class="selector"></div><input id="bus_ventas" type="search" placeholder="Buscar por código, cliente o dirección" autocomplete="off"></div>
+<div id="tventas" class="zona-tabla"></div></section>
+<section id="s_entregas"><h2>Entregas</h2><div id="tent"></div>
+<div id="mis_repartos" style="display:none"><h3>Mis entregas realizadas</h3><div class="barra"><div id="sel_repartos" class="selector"></div></div>
+<div id="resumen_repartos" class="indicadores"></div><div id="trepartos" class="zona-tabla tabla-repartos"></div></div></section>
+<section id="s_dash"><h2>Panel</h2>
+<div class="barra"><div id="sel_periodo" class="selector"></div></div>
+<div id="rango" class="fila rango" style="display:none"><div><label for="rg_desde">Desde</label><input type="date" id="rg_desde"></div><div><label for="rg_hasta">Hasta</label><input type="date" id="rg_hasta"></div><button data-accion="aplicar">Aplicar</button></div>
+<div class="barra"><div class="agrupar"><small>Agrupar por</small><div id="sel_paso" class="selector"></div></div>
+<div class="exportar"><button class="secundario" data-accion="previa">Vista previa y descarga</button></div></div>
+<p id="pista_panel" class="pista"></p>
+<div class="indicadores" id="kpis"></div>
+<div class="caja"><h3>Resumen del sistema experto</h3><ul id="exp_resumen" class="explicacion"></ul></div>
+<div class="rejilla-graficos">
+<div class="caja"><h3>Evolución de las ventas</h3><div class="grafico"><canvas id="g_evolucion"></canvas></div><ul id="exp_evolucion" class="explicacion"></ul></div>
+<div class="caja"><h3>Productos más vendidos</h3><div class="grafico"><canvas id="g_productos"></canvas></div><ul id="exp_productos" class="explicacion"></ul></div>
+<div class="caja"><h3>Ganancia por producto</h3><div class="grafico"><canvas id="g_ganancia"></canvas></div><ul id="exp_ganancia" class="explicacion"></ul></div>
+<div class="caja"><h3>Ventas por categoría</h3><div class="grafico"><canvas id="g_categorias"></canvas></div><ul id="exp_categorias" class="explicacion"></ul></div>
+<div class="caja"><h3>Medios de pago</h3><div class="grafico"><canvas id="g_medios"></canvas></div><ul id="exp_medios" class="explicacion"></ul></div>
+<div class="caja"><h3>Promedio por día de la semana</h3><div class="grafico"><canvas id="g_dias"></canvas></div><ul id="exp_dias" class="explicacion"></ul></div>
+<div class="caja"><h3>Ventas por hora</h3><div class="grafico"><canvas id="g_horas"></canvas></div><ul id="exp_horas" class="explicacion"></ul></div>
+</div></section>
+<section id="s_emp"><h2>Empleados</h2><div class="caja"><h3>Nuevo empleado</h3><div class="fila"><input id="en" autocomplete="off" placeholder="Nombre completo"><input id="eu" autocomplete="off" placeholder="Usuario (ej: maria)" autocapitalize="none"><input id="eco" autocomplete="off" type="email" placeholder="Correo (opcional)" autocapitalize="none">
+<select id="er"><option value="vendedor">Vendedor</option><option value="repartidor">Repartidor</option><option value="admin">Administrador</option></select><input id="ec" type="password" placeholder="Contraseña (mín. 6)" autocomplete="new-password"></div>
+<button data-accion="crear">Crear empleado</button></div><div id="detalle_emp" class="caja" style="display:none"></div><div class="barra"><div id="sel_emp" class="selector"></div><input id="bus_emp" type="search" placeholder="Buscar por nombre, usuario, código o correo" autocomplete="off"></div>
+<div id="temp" class="zona-tabla"></div></section>
+<section id="s_caja"><h2>Caja</h2>
+<div class="barra"><div id="sel_caja" class="selector"></div></div>
+<div id="caja_actual">
+<div id="caja_cerrada" class="caja"><h3>La caja está cerrada</h3><p class="pista">Abrí la caja con el efectivo que hay al empezar el día para poder registrar ventas y cobros.</p>
+<div class="fila"><input id="ca_monto" inputmode="decimal" placeholder="Efectivo inicial en caja" autocomplete="off"></div><button data-accion="abrir">Abrir caja</button></div>
+<div id="caja_ultima" class="caja" style="display:none"></div>
+<div id="caja_abierta" style="display:none">
+<div class="indicadores" id="caja_kpis"></div>
+<div class="caja"><h3>Resumen por medio de pago</h3><div id="caja_tabla" class="zona-tabla"></div><p id="caja_nota" class="pista"></p></div>
+<div class="caja" id="caja_egreso"><h3>Registrar egreso</h3><div class="fila"><select id="eg_tipo"><option value="gasto">Gasto</option><option value="retiro">Retiro de dinero</option></select><input id="eg_concepto" placeholder="Concepto (ej: bolsas, luz)" autocomplete="off">
+<select id="eg_medio"><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option></select><input id="eg_monto" inputmode="decimal" placeholder="Monto" autocomplete="off"></div><button class="secundario" data-accion="egreso">Registrar egreso</button></div>
+<div class="caja"><h3>Movimientos de la caja</h3><div id="caja_movs" class="zona-tabla"></div></div>
+<div class="caja"><h3>Cerrar caja</h3><p class="pista">Contá el efectivo que hay en la caja e ingresá el total: el sistema calcula la diferencia con lo esperado.</p>
+<div class="fila"><input id="cc_contado" inputmode="decimal" placeholder="Efectivo contado" autocomplete="off"><input id="cc_obs" placeholder="Observaciones (opcional)" autocomplete="off"></div><button class="peligro" data-accion="cerrar">Cerrar caja</button></div>
+</div></div>
+<div id="caja_historial" style="display:none"><div id="tcajas" class="zona-tabla"></div></div></section>
+<section id="s_comp"><h2>Compras</h2>
+<div class="caja"><h3>Nueva compra</h3>
+<div class="fila"><select id="cp_proveedor"></select><input id="cp_nota" placeholder="Nota o N° de factura (opcional)" autocomplete="off"></div>
+<div id="ci_buscador" class="selector-producto"><input id="ci_buscar" type="search" placeholder="Buscar el producto que comprás: nombre, código o categoría" autocomplete="off" aria-label="Buscar producto">
+<div id="ci_filtros" class="filtros"></div><div id="ci_resultados" class="resultados"></div>
+<p class="pista">¿No encontrás el producto? Si es nuevo, crealo primero en la pestaña Productos y volvé acá a comprarlo.</p></div>
+<div id="ci_elegido" class="aviso exito" style="display:none"></div>
+<div class="fila"><input id="ci_cantidad" inputmode="decimal" placeholder="Cantidad" autocomplete="off" disabled><input id="ci_costo" inputmode="decimal" placeholder="Costo unitario" autocomplete="off" disabled><button class="secundario" data-accion="agregar">Agregar producto</button></div>
+<div id="cp_items" class="zona-tabla"></div>
+<h3 style="margin-top:16px">Pago</h3><p class="pista">Lo que no pagues ahora queda como deuda con el proveedor y se puede pagar después.</p>
+<div class="fila"><input id="cpg_efectivo" inputmode="decimal" placeholder="Pagás en efectivo" autocomplete="off"><input id="cpg_transferencia" inputmode="decimal" placeholder="Pagás en transferencia" autocomplete="off"><input id="cpg_tarjeta" inputmode="decimal" placeholder="Pagás en tarjeta" autocomplete="off"></div><p id="cp_resumen" class="resumen-pagos"></p>
+<button data-accion="registrar">Registrar compra</button></div>
+<div class="barra"><div id="sel_comp" class="selector"></div><input id="bus_comp" type="search" placeholder="Buscar por código, proveedor o nota" autocomplete="off"></div>
+<div id="tcomp" class="zona-tabla"></div></section>
+<section id="s_prov"><h2>Proveedores</h2>
+<div class="caja"><div class="fila"><input id="vn" placeholder="Nombre" autocomplete="off"><input id="vt" placeholder="Teléfono" autocomplete="off"><input id="vc" type="email" placeholder="Correo" autocomplete="off"><input id="vd" placeholder="Dirección" autocomplete="off"><input id="vo" placeholder="Notas (opcional)" autocomplete="off"></div>
+<button data-accion="guardar">Guardar proveedor</button></div>
+<div class="barra"><div id="sel_prov" class="selector"></div><input id="bus_prov" type="search" placeholder="Buscar por nombre, código, teléfono o correo" autocomplete="off"></div>
+<div id="tprov" class="zona-tabla"></div></section>
+<section id="s_mov"><h2>Historial de stock</h2><p class="pista">Cada ingreso, venta, ajuste y merma de mercadería, con quién lo hizo y el stock que quedó.</p>
+<div class="barra"><div id="sel_mov" class="selector"></div><input id="bus_mov" type="search" placeholder="Buscar por producto, código o motivo" autocomplete="off"></div>
+<div id="tmov" class="zona-tabla"></div></section>
+<section id="s_pend"><h2>Sin acceso</h2><div class="caja"><p>Tu cuenta no tiene un acceso habilitado todavía. Consultá con el administrador.</p></div></section>
+</main></div>
+<div id="comprobante"></div>
+<script type="module" src="js/principal.js"></script></body></html>
